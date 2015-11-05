@@ -1,24 +1,20 @@
-//Lets require/import the HTTP module
 var http = require('http');
 var fs = require('fs');
-//Lets define a port we want to listen to
+
 const PORT=8080;
 
 //We need a function which handles requests and send response
 function handleRequest(req, res){
+    var fileLocation = __dirname + req.url;
     try{
-        data = fs.readdirSync(__dirname + req.url).join(", ")
+        // readFileSync returns buffer, but it is converted to a string immediatly
+        var data = fs.readFileSync(fileLocation).toString("utf8")
     } catch (err){
-        res.end("Invalid Location");
+        // simulates a 404
+        res.end("Invalid Request");
     }
     res.end(data);
 }
 
 //Create a server
-var server = http.createServer(handleRequest);
-
-//Lets start our server
-server.listen(PORT, function(){
-    //Callback triggered when server is successfully listening. Hurray!
-    console.log("Server listening on: http://localhost:%s", PORT);
-});
+var server = http.createServer(handleRequest).listen(PORT);
