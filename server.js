@@ -1,12 +1,17 @@
 //Lets require/import the HTTP module
 var http = require('http');
-
+var fs = require('fs');
 //Lets define a port we want to listen to
 const PORT=8080;
 
 //We need a function which handles requests and send response
-function handleRequest(request, response){
-    response.end('It Works!! Path Hit: ' + request.url);
+function handleRequest(req, res){
+    try{
+        data = fs.readdirSync(__dirname + req.url).join(", ")
+    } catch (err){
+        res.end("Invalid Location");
+    }
+    res.end(data);
 }
 
 //Create a server
